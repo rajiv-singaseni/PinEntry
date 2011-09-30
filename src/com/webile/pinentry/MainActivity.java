@@ -35,11 +35,12 @@ public class MainActivity extends Activity {
     }
     
     public void verifyPin(View view) {
-    	Toast.makeText(this, "Verify pin", Toast.LENGTH_SHORT).show();
+//    	Toast.makeText(this, "Verify pin", Toast.LENGTH_SHORT).show();
     	if(pinStored == null || pinStored.length() == 0) {
     		Toast.makeText(this, "Please create a pin first", Toast.LENGTH_SHORT).show();
+    		return;
     	}
-    	delegate.setPinDialogMode(PinEntryDialog.MODE_CREATE);
+    	delegate.setPinDialogMode(PinEntryDialog.MODE_VERIFY);
     	showDialog(PIN_ENTRY_DIALOG);
     }
     
@@ -48,9 +49,17 @@ public class MainActivity extends Activity {
     	return PinEntryDialog.getEntryDialog(this, delegate);
     }
     
+    @Override
+    protected void onPrepareDialog(int id, Dialog dialog) {
+    	if(id == PIN_ENTRY_DIALOG) {
+    		delegate.mDialogContainer.reset();
+    	}
+    }
+    
     public class MyPinEntryDelegate implements PinEntryDialog.PinEntryDelegate {
 
     	private int pinDialogMode;
+    	private PinEntryDialog mDialogContainer;
     	
     	public void setPinDialogMode(int pinDialogMode) {
 			this.pinDialogMode = pinDialogMode;
@@ -79,6 +88,14 @@ public class MainActivity extends Activity {
 
 		@Override
 		public String getTitleForMode(int mode) {
+			switch(mode) {
+			case PinEntryDialog.MODE_CREATE:
+				return "Create a 4 digit pin to secure your credit card";
+			case PinEntryDialog.MODE_CONFIRM:
+				return "Please verify your 4 digit pin";
+			case PinEntryDialog.MODE_VERIFY:
+				return "To authorize, Please enter your pin code";
+			}
 			return null;
 		}
 
@@ -97,6 +114,11 @@ public class MainActivity extends Activity {
 	    	Toast.makeText(MainActivity.this, "No new pin created", Toast.LENGTH_SHORT).show();
 			dismissDialog(PIN_ENTRY_DIALOG);
 
+		}
+		
+		@Override
+		public void setPinEntryDialog(PinEntryDialog pinEntryDialog) {
+			this.mDialogContainer = pinEntryDialog;
 		}
     }
 }

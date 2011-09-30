@@ -9,35 +9,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-
-import com.webile.pinentry.R;
+import android.widget.TextView;
 
 public class PinEntryDialog implements TextWatcher {
 
 	public static final int MODE_CREATE = 0x1;
-	private static final int MODE_CONFIRM = 0x10;
+	public static final int MODE_CONFIRM = 0x10;
 	public static final int MODE_VERIFY = 0X2;
-	
+	public static final String TAG = "PinEntryDialog";
 	private int mMode;
 	
 	private AlertDialog mDialog;
 	private PinEntryDelegate mDelegate;
 	
-//	private String mCreationHint;
-//	private String mConfirmHint;
-
-	public void setMode(int mode) {
-		this.mMode = mode;
-	}
-	
-	public int getMode() {
-		return mMode;
-	}
-	
     private EditText securePinEditText1;
     private EditText securePinEditText2;
     private EditText securePinEditText3;
     private EditText securePinEditText4;
+    private TextView mHintTextView;
     
     private String enteredPin;
     private String pinToVerify;
@@ -45,15 +34,17 @@ public class PinEntryDialog implements TextWatcher {
     private PinEntryDialog(Context context, PinEntryDelegate delegate) {
     	this.mDelegate = delegate;
     	View contentView = LayoutInflater.from(context).inflate(com.webile.pinentry.R.layout.pin_entry_content, null, false);
-    	securePinEditText1 = (EditText) contentView.findViewById(R.id.secure_pin_text_view1);
-    	securePinEditText2 = (EditText) contentView.findViewById(R.id.secure_pin_text_view2);
-    	securePinEditText3 = (EditText) contentView.findViewById(R.id.secure_pin_text_view3);
-    	securePinEditText4 = (EditText) contentView.findViewById(R.id.secure_pin_text_view4);
+    	securePinEditText1 = (EditText) contentView.findViewById(android.R.id.text1);
+    	securePinEditText2 = (EditText) contentView.findViewById(android.R.id.text2);
+    	securePinEditText3 = (EditText) contentView.findViewById(android.R.id.button1);
+    	securePinEditText4 = (EditText) contentView.findViewById(android.R.id.button2);
     	securePinEditText1.addTextChangedListener(this);
     	securePinEditText2.addTextChangedListener(this);
     	securePinEditText3.addTextChangedListener(this);
     	securePinEditText4.addTextChangedListener(this);
-    	mDialog = new AlertDialog.Builder(context).setTitle("Pin Entry").setView(contentView).setPositiveButton("OK", null).create();
+    	mHintTextView = (TextView) contentView.findViewById(android.R.id.hint);
+    	mDialog = new AlertDialog.Builder(context).setView(contentView).setPositiveButton("OK", null).create();
+    	delegate.setPinEntryDialog(this);
         securePinEditText1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -62,7 +53,6 @@ public class PinEntryDialog implements TextWatcher {
                 }
             }
         });
-        reset(0);
     }
     
 	public static AlertDialog getEntryDialog(Context context, PinEntryDelegate delegate) {
@@ -93,6 +83,10 @@ public class PinEntryDialog implements TextWatcher {
     
     private void enteredAllDigits(String pinEntered) {
     	Log.v("PE","enteredDigits mode:"+mMode);
+    	if(mDelegate.getMode() == MODE_VERIFY) {
+    		mMode = MODE_VERIFY;
+    		pinToVerify = mDelegate.getVerificationPin();
+    	}
     	if(mMode == MODE_CREATE) {
     		this.enteredPin = pinEntered;
     		reset(MODE_CONFIRM);
@@ -105,6 +99,7 @@ public class PinEntryDialog implements TextWatcher {
     			//Entered incorrect pin while confirmation
     			mDelegate.didFailToCreatePin();
     		}
+    		mMode = MODE_CREATE;
     	} else if (mMode == MODE_VERIFY) {
     		if(pinToVerify.equalsIgnoreCase(pinEntered)) {
     			//Successfully verified
@@ -114,30 +109,37 @@ public class PinEntryDialog implements TextWatcher {
     			mDelegate.didFailEnteringCorrectPin();
     		}
     	}
-    	reset(-1);
-    }
-    
-    private void reset(int mode) {
     	securePinEditText1.setText("");
     	securePinEditText2.setText("");
     	securePinEditText3.setText("");
     	securePinEditText4.setText("");
-    	if(mode == -1) {
-    		Log.v("PE","Reset the text fields");
-    		return;
-    	}
-    	if(mode == MODE_CONFIRM) {
-    		mMode = MODE_CONFIRM;
-    		return;
-    	}
-    	mMode = mDelegate.getMode();
-    	
-    	if(mMode == MODE_CREATE) {
-    		enteredPin = "";
-    	} else if (mMode == MODE_VERIFY) {
-    		pinToVerify = mDelegate.getVerificationPin();
-    	}
     }
+    
+    /**
+     * Reset the dialog textfields and adjust the mode.
+     * @param mode
+     */
+	private void reset(int mode) {
+		mMode = mDelegate.getMode();
+		
+		if (mode == MODE_CONFIRM) {
+			mMode = MODE_CONFIRM;
+		} else {
+
+			if (mMode == MODE_CREATE) {
+				enteredPin = "";
+			} else if (mMode == MODE_VERIFY) {
+				pinToVerify = mDelegate.getVerificationPin();
+			}
+		}
+		// set the title and message based on the mode.
+		mHintTextView.setText(mDelegate.getTitleForMode(mMode));
+	}
+	
+	public void reset() {
+		//TODO: Throw an exception if the mode is not one of MODE_CREATE or MODE_VERIFY
+		reset(mDelegate.getMode());
+	}
     
 	public interface PinEntryDelegate {
 		
@@ -166,6 +168,8 @@ public class PinEntryDialog implements TextWatcher {
 		
 		//titles and styling
 		public String getTitleForMode(int mode);
+		
+		public void setPinEntryDialog(PinEntryDialog pinEntryDialog);
 	
 	}
 

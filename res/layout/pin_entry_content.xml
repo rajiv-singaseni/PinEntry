@@ -3,7 +3,7 @@
 	android:layout_width="250dip" android:layout_height="wrap_content"
 	android:orientation="vertical" android:layout_gravity="center_vertical">
 	<TextView android:text="To Authorize Purchase Please Enter Your BuyFi Pin Code" 
-		android:id="@+id/secure_pin_heading" android:layout_width="fill_parent"
+		android:id="@android:id/hint" android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:visibility="visible" android:gravity="center"></TextView>
 			<TextView android:text="  "
@@ -13,16 +13,16 @@
 	<LinearLayout android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:gravity="center_horizontal">
-		<EditText android:text="" android:id="@+id/secure_pin_text_view1"
+		<EditText android:text="" android:id="@android:id/text1"
 			android:layout_width="60dip" android:layout_height="wrap_content"
 			android:lines="1" android:inputType="number" android:maxLength="1" android:password="true" android:focusable="true"></EditText>
-		<EditText android:text="" android:id="@+id/secure_pin_text_view2"
+		<EditText android:text="" android:id="@android:id/text2"
 			android:layout_width="60dip" android:layout_height="wrap_content"
 			android:lines="1" android:inputType="number" android:maxLength="1" android:password="true"></EditText>
-		<EditText android:text="" android:id="@+id/secure_pin_text_view3"
+		<EditText android:text="" android:id="@android:id/button1"
 			android:layout_width="60dip" android:layout_height="wrap_content"
 			android:lines="1" android:inputType="number" android:maxLength="1" android:password="true"></EditText>
-		<EditText android:text="" android:id="@+id/secure_pin_text_view4"
+		<EditText android:text="" android:id="@android:id/button2"
 			android:layout_width="60dip" android:layout_height="wrap_content"
 			android:lines="1" android:inputType="number" android:maxLength="1" android:password="true"></EditText>
 	</LinearLayout>
