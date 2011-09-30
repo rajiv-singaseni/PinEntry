@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="250dip" android:layout_height="wrap_content"
+	android:orientation="vertical" android:layout_gravity="center_vertical">
+	<TextView android:text="To Authorize Purchase Please Enter Your BuyFi Pin Code" 
+		android:id="@+id/secure_pin_heading" android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:visibility="visible" android:gravity="center"></TextView>
+			<TextView android:text="  "
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:visibility="visible" android:gravity="center"></TextView>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal">
+		<EditText android:text="" android:id="@+id/secure_pin_text_view1"
+			android:layout_width="60dip" android:layout_height="wrap_content"
+			android:lines="1" android:inputType="number" android:maxLength="1" android:password="true" android:focusable="true"></EditText>
+		<EditText android:text="" android:id="@+id/secure_pin_text_view2"
+			android:layout_width="60dip" android:layout_height="wrap_content"
+			android:lines="1" android:inputType="number" android:maxLength="1" android:password="true"></EditText>
+		<EditText android:text="" android:id="@+id/secure_pin_text_view3"
+			android:layout_width="60dip" android:layout_height="wrap_content"
+			android:lines="1" android:inputType="number" android:maxLength="1" android:password="true"></EditText>
+		<EditText android:text="" android:id="@+id/secure_pin_text_view4"
+			android:layout_width="60dip" android:layout_height="wrap_content"
+			android:lines="1" android:inputType="number" android:maxLength="1" android:password="true"></EditText>
+	</LinearLayout>
+</LinearLayout>
