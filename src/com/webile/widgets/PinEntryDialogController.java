@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class PinEntryDialog implements TextWatcher {
+public class PinEntryDialogController implements TextWatcher {
 
 	public static final int MODE_CREATE = 0x1;
 	public static final int MODE_CONFIRM = 0x10;
@@ -31,7 +31,7 @@ public class PinEntryDialog implements TextWatcher {
     private String enteredPin;
     private String pinToVerify;
     
-    private PinEntryDialog(Context context, PinEntryDelegate delegate) {
+    private PinEntryDialogController(Context context, PinEntryDelegate delegate) {
     	this.mDelegate = delegate;
     	View contentView = LayoutInflater.from(context).inflate(com.webile.pinentry.R.layout.pin_entry_content, null, false);
     	securePinEditText1 = (EditText) contentView.findViewById(android.R.id.text1);
@@ -44,7 +44,7 @@ public class PinEntryDialog implements TextWatcher {
     	securePinEditText4.addTextChangedListener(this);
     	mHintTextView = (TextView) contentView.findViewById(android.R.id.hint);
     	mDialog = new AlertDialog.Builder(context).setView(contentView).setPositiveButton("OK", null).create();
-    	delegate.setPinEntryDialog(this);
+    	delegate.setPinEntryDialogController(this);
         securePinEditText1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -56,7 +56,7 @@ public class PinEntryDialog implements TextWatcher {
     }
     
 	public static AlertDialog getEntryDialog(Context context, PinEntryDelegate delegate) {
-		PinEntryDialog d = new PinEntryDialog(context, delegate);
+		PinEntryDialogController d = new PinEntryDialogController(context, delegate);
 		return d.mDialog;
 	}
     
@@ -156,12 +156,12 @@ public class PinEntryDialog implements TextWatcher {
 		//mode and pin details
 		
 		/**
-		 * Should be one of {@link PinEntryDialog#MODE_CREATE} or {@link PinEntryDialog#MODE_VERIFY}
+		 * Should be one of {@link PinEntryDialogController#MODE_CREATE} or {@link PinEntryDialogController#MODE_VERIFY}
 		 */
 		public int getMode();
 		
 		/**
-		 * The string user has to verify. This function is called when {@link PinEntryDialog.PinEntryDelegate#getMode()} returns {@link PinEntryDialog#MODE_VERIFY}
+		 * The string user has to verify. This function is called when {@link PinEntryDialogController.PinEntryDelegate#getMode()} returns {@link PinEntryDialogController#MODE_VERIFY}
 		 * @return
 		 */
 		public String getVerificationPin();
@@ -169,7 +169,8 @@ public class PinEntryDialog implements TextWatcher {
 		//titles and styling
 		public String getTitleForMode(int mode);
 		
-		public void setPinEntryDialog(PinEntryDialog pinEntryDialog);
+		//handling dialog controller changes.
+		public void setPinEntryDialogController(PinEntryDialogController dialogController);
 	
 	}
 

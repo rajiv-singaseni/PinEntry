@@ -1,6 +1,6 @@
 package com.webile.pinentry;
 
-import com.webile.widgets.PinEntryDialog;
+import com.webile.widgets.PinEntryDialogController;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
     
     public void createPin(View view) {
 //    	Toast.makeText(this, "Create a new pin", Toast.LENGTH_SHORT).show();
-    	delegate.setPinDialogMode(PinEntryDialog.MODE_CREATE);
+    	delegate.setPinDialogMode(PinEntryDialogController.MODE_CREATE);
     	showDialog(PIN_ENTRY_DIALOG);
     }
     
@@ -40,13 +40,13 @@ public class MainActivity extends Activity {
     		Toast.makeText(this, "Please create a pin first", Toast.LENGTH_SHORT).show();
     		return;
     	}
-    	delegate.setPinDialogMode(PinEntryDialog.MODE_VERIFY);
+    	delegate.setPinDialogMode(PinEntryDialogController.MODE_VERIFY);
     	showDialog(PIN_ENTRY_DIALOG);
     }
     
     @Override
     protected Dialog onCreateDialog(int id) {
-    	return PinEntryDialog.getEntryDialog(this, delegate);
+    	return PinEntryDialogController.getEntryDialog(this, delegate);
     }
     
     @Override
@@ -56,10 +56,10 @@ public class MainActivity extends Activity {
     	}
     }
     
-    public class MyPinEntryDelegate implements PinEntryDialog.PinEntryDelegate {
+    public class MyPinEntryDelegate implements PinEntryDialogController.PinEntryDelegate {
 
     	private int pinDialogMode;
-    	private PinEntryDialog mDialogContainer;
+    	private PinEntryDialogController mDialogContainer;
     	
     	public void setPinDialogMode(int pinDialogMode) {
 			this.pinDialogMode = pinDialogMode;
@@ -89,11 +89,11 @@ public class MainActivity extends Activity {
 		@Override
 		public String getTitleForMode(int mode) {
 			switch(mode) {
-			case PinEntryDialog.MODE_CREATE:
+			case PinEntryDialogController.MODE_CREATE:
 				return "Create a 4 digit pin to secure your credit card";
-			case PinEntryDialog.MODE_CONFIRM:
+			case PinEntryDialogController.MODE_CONFIRM:
 				return "Please verify your 4 digit pin";
-			case PinEntryDialog.MODE_VERIFY:
+			case PinEntryDialogController.MODE_VERIFY:
 				return "To authorize, Please enter your pin code";
 			}
 			return null;
@@ -117,7 +117,7 @@ public class MainActivity extends Activity {
 		}
 		
 		@Override
-		public void setPinEntryDialog(PinEntryDialog pinEntryDialog) {
+		public void setPinEntryDialogController(PinEntryDialogController pinEntryDialog) {
 			this.mDialogContainer = pinEntryDialog;
 		}
     }
